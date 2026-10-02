@@ -7,7 +7,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Prisma Blog API is running",
+    message: " Blog API is running",
   });
 });
 
@@ -60,12 +60,12 @@ app.patch("/users/:id", async (req, res) => {
 
     const user = await prisma.user.update({
       where: {
-        id
+        id,
       },
       data: {
         name,
-        email
-      }
+        email,
+      },
     });
 
     res.json(user);
@@ -73,7 +73,18 @@ app.patch("/users/:id", async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      message: "Could not update user"
+      message: "Could not update user",
     });
+  }
+});
+
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await prisma.user.delete({ where: { id } });
+    res.status(204).send();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not delete user" });
   }
 });

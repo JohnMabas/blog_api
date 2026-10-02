@@ -88,3 +88,29 @@ app.delete("/users/:id", async (req, res) => {
     res.status(500).json({ message: "Could not delete user" });
   }
 });
+
+// Create post..........
+
+app.post("/posts", async (req, res) => {
+  try {
+    const { title, content, userId } = req.body;
+    const post = await prisma.post.create({ data: { title, content, userId } });
+    res.status(201).json(post);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not create post" });
+  }
+});
+
+app.get("/users/search", async (req, res) => {
+  try {
+    const search = String(req.query.search || "");
+    const users = await prisma.user.findMany({
+      where: { name: { contains: search } },
+    });
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Search failed" });
+  }
+});
